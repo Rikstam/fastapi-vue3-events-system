@@ -1,13 +1,33 @@
 from typing import Union
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from .data.events import events
 
 app = FastAPI()
+
+origins = [
+    "http://localhost",
+    "http://localhost:8003",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
+
+@app.get("/events")
+def read_events():
+    return events
 
 
 @app.get("/items/{item_id}")
