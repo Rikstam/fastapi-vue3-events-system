@@ -15,3 +15,22 @@ services:
       - ./backend/:/usr/backend/app/
     ports:
       - 8002:8000
+    environment:
+      - ENVIRONMENT=dev
+      - TESTING=0
+      - DATABASE_URL=postgres://postgres:postgres@events-db:5432/events_dev
+      - DATABASE_TEST_URL=postgres://postgres:postgres@events-db:5432/events_test
+    depends_on:
+      - events-db
+  events-db:
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+volumes:
+  postgres_data:
