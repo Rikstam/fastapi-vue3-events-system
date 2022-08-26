@@ -14,8 +14,8 @@ app = FastAPI()
 register_tortoise(
     app,
     db_url=os.environ.get("DATABASE_URL"),
-    modules={"models": ["app.models.tortoise"]},
-    generate_schemas=True,
+    modules={"models": ["app.models.tortoise", "aerich.models"]},
+    generate_schemas=False,
     add_exception_handlers=True,
 )
 
