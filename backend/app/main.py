@@ -1,55 +1,51 @@
 from typing import Union
 import os
 
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from tortoise.contrib.fastapi import register_tortoise
 
-from .data.events import events
+from app.api import ping
+from app.api import events
 
-from app.config import get_settings, Settings
+def create_application() -> FastAPI:
 
-app = FastAPI()
+    application = FastAPI()
 
-register_tortoise(
-    app,
-    db_url=os.environ.get("DATABASE_URL"),
-    modules={"models": ["app.models.tortoise", "aerich.models"]},
-    generate_schemas=False,
-    add_exception_handlers=True,
-)
+    register_tortoise(
+        application,
+        db_url=os.environ.get("DATABASE_URL"),
+        modules={"models": ["app.models.tortoise", "aerich.models"]},
+        generate_schemas=False,
+        add_exception_handlers=True,
+    )
 
-origins = [
-    "http://localhost",
-    "http://localhost:8003",
-]
+    application.include_router(ping.router)
+    application.include_router(events.router)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+    origins = [
+        "http://localhost",
+        "http://localhost:8003",
+    ]
 
+    application.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+    return application
+
+app = create_application()
 
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
-
-@app.get("/events")
-def read_events():
-    return events
 
 
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: Union[str, None] = None):
     return {"item_id": item_id, "q": q}
 
-@app.get("/ping")
-def pong(settings: Settings = Depends(get_settings)):
-    return {
-        "ping": "pong!",
-        "environment": settings.environment,
-        "testing": settings.testing
-    }
+
