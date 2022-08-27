@@ -5,11 +5,11 @@ from app.models.tortoise import Event
 async def post(payload: EventPayloadSchema) -> int:
     event = Event(
        title=payload.title,
-       description="dummy description",
-       location="dunmmy location",
-       date="2022-12-24",
-       time="10:00",
-       organization="dummy organization"
+       description=payload.description,
+       location=payload.location,
+       date=payload.date,
+       time=payload.time,
+       organization=payload.organization
     )
     await event.save()
     return event.id

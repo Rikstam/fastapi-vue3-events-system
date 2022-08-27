@@ -11,7 +11,12 @@ async def create_summary(payload: EventPayloadSchema) -> EventResponseSchema:
 
     response_object = {
         "id": event_id,
-        "title": payload.title
+        "title": payload.title,
+        "description": payload.description,
+        "location": payload.location,
+        "date": payload.date,
+        "time": payload.time,
+        "organization": payload.organization
     }
     return response_object
 
