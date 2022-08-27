@@ -37,9 +37,9 @@ app.add_middleware(
 def read_root():
     return {"Hello": "World"}
 
-"""@app.get("/events")
+@app.get("/events")
 def read_events():
-    return events"""
+    return events
 
 
 @app.get("/items/{item_id}")

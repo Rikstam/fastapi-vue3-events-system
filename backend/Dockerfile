@@ -16,7 +16,7 @@ RUN apt-get update \
 # install dependencies
 COPY ./Pipfile .
 COPY ./Pipfile.lock .
-RUN pipenv install --system --deploy
+RUN pipenv install --system --deploy --dev
 
 # copy project
 COPY . /usr/backend/app/
