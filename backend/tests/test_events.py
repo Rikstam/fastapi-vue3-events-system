@@ -62,6 +62,13 @@ def test_create_events_invalid_json(test_app):
         ]
     }
 
+    invalid_mock_event = mock_event.copy()
+
+    invalid_mock_event["date"] = "10.12.2099"
+    response = test_app.post("/events/", data=json.dumps(invalid_mock_event))
+    assert response.status_code == 422
+    assert response.json()["detail"][0]["msg"] == "invalid date format"
+
 def test_read_event(test_app_with_db):
     response = test_app_with_db.post("/events/", data=json.dumps(mock_event))
     event_id = response.json()["id"]
@@ -79,6 +86,19 @@ def test_read_event_incorrect_id(test_app_with_db):
     response = test_app_with_db.get("/events/999/")
     assert response.status_code == 404
     assert response.json()["detail"] == "Event not found"
+
+    response = test_app_with_db.get("/events/0/")
+    assert response.status_code == 422
+    assert response.json() == {
+        "detail": [
+            {
+                "loc": ["path", "id"],
+                "msg": "ensure this value is greater than 0",
+                "type": "value_error.number.not_gt",
+                "ctx": {"limit_value": 0},
+            }
+        ]
+    }
 
 def test_read_all_events(test_app_with_db):
     response = test_app_with_db.post("/events/", data=json.dumps(mock_event))
@@ -189,9 +209,7 @@ def test_update_event_invalid_keys(test_app_with_db):
     event_id = response.json()["id"]
     mock_event.pop("title")
 
-    response = test_app_with_db.put(
-        f"/events/{event_id}/",
-        data=json.dumps(mock_event))
+    response = test_app_with_db.put(f"/events/{event_id}/", data=json.dumps(mock_event))
     assert response.status_code == 422
     assert response.json() == {
         "detail": [
@@ -199,24 +217,6 @@ def test_update_event_invalid_keys(test_app_with_db):
                 "loc": ["body", "title"],
                 "msg": "field required",
                 "type": "value_error.missing",
-            }
-        ]
-    }
-
-def test_read_event_incorrect_id(test_app_with_db):
-    response = test_app_with_db.get("/events/999/")
-    assert response.status_code == 404
-    assert response.json()["detail"] == "Event not found"
-
-    response = test_app_with_db.get("/events/0/")
-    assert response.status_code == 422
-    assert response.json() == {
-        "detail": [
-            {
-                "loc": ["path", "id"],
-                "msg": "ensure this value is greater than 0",
-                "type": "value_error.number.not_gt",
-                "ctx": {"limit_value": 0},
             }
         ]
     }
