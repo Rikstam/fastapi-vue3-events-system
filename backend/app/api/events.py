@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Path
 from app.api import crud
 from app.models.pydantic import (
     EventPayloadSchema,
@@ -26,7 +26,7 @@ async def create_summary(payload: EventPayloadSchema) -> EventResponseSchema:
     return response_object
 
 @router.get("/{id}/", response_model=EventSchema)
-async def read_event(id: int) -> EventSchema:
+async def read_event(id: int = Path(..., gt=0)) -> EventSchema:
     event = await crud.get(id)
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")

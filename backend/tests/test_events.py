@@ -202,3 +202,21 @@ def test_update_event_invalid_keys(test_app_with_db):
             }
         ]
     }
+
+def test_read_event_incorrect_id(test_app_with_db):
+    response = test_app_with_db.get("/events/999/")
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Event not found"
+
+    response = test_app_with_db.get("/events/0/")
+    assert response.status_code == 422
+    assert response.json() == {
+        "detail": [
+            {
+                "loc": ["path", "id"],
+                "msg": "ensure this value is greater than 0",
+                "type": "value_error.number.not_gt",
+                "ctx": {"limit_value": 0},
+            }
+        ]
+    }
