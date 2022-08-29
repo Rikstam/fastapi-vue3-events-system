@@ -1,6 +1,5 @@
 from typing import List
 from fastapi import APIRouter, HTTPException
-from app.data.events import events
 from app.api import crud
 from app.models.pydantic import EventPayloadSchema, EventResponseSchema
 from app.models.tortoise import EventSchema
@@ -30,6 +29,15 @@ async def read_event(id: int) -> EventSchema:
 
     return event
 
+@router.delete("/{id}/", response_model=EventResponseSchema)
+async def delete_summary(id: int) -> EventResponseSchema:
+    event = await crud.get(id)
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+
+    await crud.delete(id)
+
+    return event
 
 @router.get("/", response_model=List[EventSchema])
 async def read_all_events() -> List[EventSchema]:

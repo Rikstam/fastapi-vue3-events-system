@@ -23,3 +23,7 @@ async def get(id: int) -> Union[dict, None]:
 async def get_all() -> List:
     events = await Event.all().values()
     return events
+
+async def delete(id: int) -> int:
+    event = await Event.filter(id=id).first().delete()
+    return event

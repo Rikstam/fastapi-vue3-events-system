@@ -8,7 +8,7 @@ mock_event = {
         "description": "A test description",
         "location": "A test location",
         "date": "2022-08-27",
-        "time": "13:00",
+        "time": "13:00:00+00:00",
         "organization": "A test organization"
         }
 
@@ -21,7 +21,7 @@ def test_create_event(test_app_with_db):
     assert response.json()["description"] == "A test description"
     assert response.json()["location"] == "A test location"
     assert response.json()["date"] == "2022-08-27"
-    assert response.json()["time"] == "13:00:00"
+    assert response.json()["time"] == "13:00:00+00:00"
     assert response.json()["organization"] == "A test organization"
 
 def test_create_events_invalid_json(test_app):
@@ -89,3 +89,27 @@ def test_read_all_events(test_app_with_db):
 
     response_list = response.json()
     assert len(list(filter(lambda d: d["id"] == event_id, response_list))) == 1
+
+def test_delete_event(test_app_with_db):
+    response = test_app_with_db.post(
+        "/events/", data=json.dumps(mock_event)
+    )
+    event_id = response.json()["id"]
+
+    response = test_app_with_db.delete(f"/events/{event_id}/")
+    
+    assert response.status_code == 200
+    assert response.json() == {
+        "id": event_id,
+        "title": mock_event["title"],
+        "description": mock_event["description"],
+        "location": mock_event["location"],
+        "date": mock_event["date"],
+        "time": mock_event["time"],
+        "organization": mock_event["organization"]
+    }
+
+def test_delete_event_incorrect_id(test_app_with_db):
+    response = test_app_with_db.delete("/events/999/")
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Event not found"
