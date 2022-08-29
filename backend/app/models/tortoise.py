@@ -1,5 +1,5 @@
 from tortoise import fields, models
-
+from tortoise.contrib.pydantic import pydantic_model_creator  # new
 
 class Event(models.Model):
     id = fields.IntField(pk=True)
@@ -12,3 +12,5 @@ class Event(models.Model):
 
     def __str__(self):
         return self.title
+
+EventSchema = pydantic_model_creator(Event)

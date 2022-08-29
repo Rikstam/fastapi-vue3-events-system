@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 from app.data.events import events
 from app.api import crud
 from app.models.pydantic import EventPayloadSchema, EventResponseSchema
+from app.models.tortoise import EventSchema
 
 router = APIRouter()
 
@@ -19,6 +20,12 @@ async def create_summary(payload: EventPayloadSchema) -> EventResponseSchema:
         "organization": payload.organization
     }
     return response_object
+
+@router.get("/{id}/", response_model=EventSchema)
+async def read_summary(id: int) -> EventSchema:
+    event = await crud.get(id)
+
+    return event
 
 
 @router.get("/events")

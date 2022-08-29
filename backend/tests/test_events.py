@@ -3,15 +3,18 @@ import json
 import pytest
 
 
-def test_create_event(test_app_with_db):
-    response = test_app_with_db.post("/events/", data=json.dumps({
+mock_event = {
         "title": "A test event title",
         "description": "A test description",
         "location": "A test location",
         "date": "2022-08-27",
         "time": "13:00",
         "organization": "A test organization"
-        }))
+        }
+
+
+def test_create_event(test_app_with_db):
+    response = test_app_with_db.post("/events/", data=json.dumps(mock_event))
 
     assert response.status_code == 201
     assert response.json()["title"] == "A test event title"
@@ -58,3 +61,16 @@ def test_create_events_invalid_json(test_app):
             },
         ]
     }
+
+def test_read_event(test_app_with_db):
+    response = test_app_with_db.post("/events/", data=json.dumps(mock_event))
+    event_id = response.json()["id"]
+
+    response = test_app_with_db.get(f"/events/{event_id}/")
+    assert response.status_code == 200
+
+    response_dict = response.json()
+    assert response_dict["id"] == event_id
+    assert response_dict["title"] == mock_event["title"]
+    assert response_dict["description"] == mock_event["description"]
+    assert response_dict["location"] == mock_event["location"]
