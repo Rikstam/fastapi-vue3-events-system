@@ -133,3 +133,72 @@ def test_update_event(test_app_with_db):
     assert response_dict["description"] == mock_event["description"]
     assert response_dict["location"] == mock_event["location"]
 
+def test_update_event_incorrect_id(test_app_with_db):
+    response = test_app_with_db.delete("/events/999/")
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Event not found"
+
+def test_update_events_invalid_json(test_app_with_db):
+    response = test_app_with_db.post("/events/", data=json.dumps(mock_event))
+    event_id = response.json()["id"]
+    
+    response = test_app_with_db.put(
+        f"/events/{event_id}/",
+        data=json.dumps({})
+    )
+    assert response.status_code == 422
+    assert response.json() == {
+        "detail": [
+            {
+                "loc": ["body", "title"],
+                "msg": "field required",
+                "type": "value_error.missing"
+            },
+            {
+                "loc": ["body", "description"],
+                "msg": "field required",
+                "type": "value_error.missing"
+            },
+            {
+                "loc": ["body", "location"],
+                "msg": "field required",
+                "type": "value_error.missing"
+            },
+            {
+                "loc": ["body", "date"],
+                "msg": "field required",
+                "type": "value_error.missing"
+            },
+            {
+                "loc": ["body", "time"],
+                "msg": "field required",
+                "type": "value_error.missing"
+            },
+            {
+                "loc": ["body", "organization"],
+                "msg": "field required",
+                "type": "value_error.missing"
+            },
+        ]
+    }
+
+def test_update_event_invalid_keys(test_app_with_db):
+    response = test_app_with_db.post(
+        "/events/", data=json.dumps(mock_event)
+    )
+    event_id = response.json()["id"]
+    mock_event.pop("title")
+
+    response = test_app_with_db.put(
+        f"/events/{event_id}/",
+        data=json.dumps(mock_event))
+    assert response.status_code == 422
+    assert response.json() == {
+        "detail": [
+            {
+                "loc": ["body", "title"],
+                "msg": "field required",
+                "type": "value_error.missing",
+            }
+        ]
+    }
