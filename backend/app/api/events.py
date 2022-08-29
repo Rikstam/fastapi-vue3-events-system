@@ -1,7 +1,11 @@
 from typing import List
 from fastapi import APIRouter, HTTPException
 from app.api import crud
-from app.models.pydantic import EventPayloadSchema, EventResponseSchema
+from app.models.pydantic import (
+    EventPayloadSchema,
+    EventResponseSchema,
+    EventUpdatePayloadSchema
+)
 from app.models.tortoise import EventSchema
 
 router = APIRouter()
@@ -42,3 +46,11 @@ async def delete_summary(id: int) -> EventResponseSchema:
 @router.get("/", response_model=List[EventSchema])
 async def read_all_events() -> List[EventSchema]:
     return await crud.get_all()
+
+@router.put("/{id}/", response_model=EventSchema)
+async def update_event(id: int, payload: EventUpdatePayloadSchema) -> EventSchema:
+    event = await crud.put(id, payload)
+    if not event:
+        raise HTTPException(status_code=404, detail="event not found")
+
+    return event

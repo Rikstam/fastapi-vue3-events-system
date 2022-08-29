@@ -10,3 +10,6 @@ class EventPayloadSchema(BaseModel):
 
 class EventResponseSchema(EventPayloadSchema):
     id: int
+
+class EventUpdatePayloadSchema(EventPayloadSchema):
+    pass

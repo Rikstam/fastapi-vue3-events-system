@@ -113,3 +113,23 @@ def test_delete_event_incorrect_id(test_app_with_db):
     response = test_app_with_db.delete("/events/999/")
     assert response.status_code == 404
     assert response.json()["detail"] == "Event not found"
+
+def test_update_event(test_app_with_db):
+    mock_event["title"] = "updated!"
+    response = test_app_with_db.post(
+        "/events/", data=json.dumps(mock_event)
+    )
+    event_id = response.json()["id"]
+
+    response = test_app_with_db.put(
+        f"/events/{event_id}/",
+        data=json.dumps(mock_event)
+    )
+    assert response.status_code == 200
+
+    response_dict = response.json()
+    assert response_dict["id"] == event_id
+    assert response_dict["title"] == mock_event["title"]
+    assert response_dict["description"] == mock_event["description"]
+    assert response_dict["location"] == mock_event["location"]
+
