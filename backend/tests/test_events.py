@@ -74,3 +74,18 @@ def test_read_event(test_app_with_db):
     assert response_dict["title"] == mock_event["title"]
     assert response_dict["description"] == mock_event["description"]
     assert response_dict["location"] == mock_event["location"]
+
+def test_read_event_incorrect_id(test_app_with_db):
+    response = test_app_with_db.get("/events/999/")
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Event not found"
+
+def test_read_all_events(test_app_with_db):
+    response = test_app_with_db.post("/events/", data=json.dumps(mock_event))
+    event_id = response.json()["id"]
+
+    response = test_app_with_db.get("/events/")
+    assert response.status_code == 200
+
+    response_list = response.json()
+    assert len(list(filter(lambda d: d["id"] == event_id, response_list))) == 1

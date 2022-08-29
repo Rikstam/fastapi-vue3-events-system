@@ -1,6 +1,6 @@
 from app.models.pydantic import EventPayloadSchema
 from app.models.tortoise import Event
-from typing import Union
+from typing import Union, List
 
 async def post(payload: EventPayloadSchema) -> int:
     event = Event(
@@ -19,3 +19,7 @@ async def get(id: int) -> Union[dict, None]:
     if event:
         return event
     return None
+
+async def get_all() -> List:
+    events = await Event.all().values()
+    return events

@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import APIRouter, HTTPException
 from app.data.events import events
 from app.api import crud
@@ -22,12 +23,14 @@ async def create_summary(payload: EventPayloadSchema) -> EventResponseSchema:
     return response_object
 
 @router.get("/{id}/", response_model=EventSchema)
-async def read_summary(id: int) -> EventSchema:
+async def read_event(id: int) -> EventSchema:
     event = await crud.get(id)
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
 
     return event
 
 
-@router.get("/events")
-def read_events():
-    return events
+@router.get("/", response_model=List[EventSchema])
+async def read_all_events() -> List[EventSchema]:
+    return await crud.get_all()
