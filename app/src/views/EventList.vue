@@ -1,7 +1,9 @@
-<script>
+<script lang="ts">
 import EventCard from '../components/EventCard.vue'
 import { useEventStore } from '../stores/EventStore'
-export default {
+import { defineComponent } from 'vue'
+
+export default defineComponent( {
   components: {
     EventCard
   },
@@ -19,7 +21,7 @@ export default {
       })
     })
   },
-}
+})
 </script>
 
 <template>

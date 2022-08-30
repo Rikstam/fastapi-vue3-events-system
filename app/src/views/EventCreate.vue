@@ -1,11 +1,14 @@
-<script>
+<script lang="ts">
+import { defineComponent, ref } from 'vue'
 import { useEventStore } from '../stores/EventStore'
 import { useUserStore } from '../stores/UserStore'
+import { EventItem } from '../types'
+import { useRouter, useRoute } from 'vue-router'
 
-export default {
-  data() {
-    return {
-      categories: [
+export default defineComponent({
+  setup() {
+    const router = useRouter()
+    const categories = [
         'sustainability',
         'nature',
         'animal welfare',
@@ -13,8 +16,8 @@ export default {
         'education',
         'food',
         'community'
-      ],
-      event: {
+     ]
+     const eventData = {
         category: '',
         title: '',
         description: '',
@@ -22,39 +25,42 @@ export default {
         date: '',
         time: '',
         organization: ''
-      }
-    }
-  },
-  setup() {
+      } as EventItem
+
      const userStore = useUserStore()
      const eventStore = useEventStore()
-     return {
-      eventStore,
-      userStore
-     }
-  },
-  methods: {
-    onSubmit() {
+
+     const onSubmit = () => {
       const event = {
-        ...this.event,
-        organization: this.userStore.user
+        ...eventData,
+        organization: userStore.user
       }
-      this.eventStore.createEvent(event)
+      eventStore.createEvent(event)
         .then(() => {
-          this.$router.push({
+          router.push({
             name: 'EventDetails',
             params: { id: event.id }
           })
         })
         .catch(error => {
-          this.$router.push({
+          router.push({
             name: 'ErrorDisplay',
             params: { error: error }
           })
         })
-    }
+     }
+     return {
+      eventStore,
+      userStore,
+      categories,
+      event: ref(eventData),
+      onSubmit
+     }
+  },
+  methods: {
+    
   }
-}
+})
 </script>
 
 <template>

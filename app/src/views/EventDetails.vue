@@ -1,11 +1,18 @@
-<script>
+<script lang="ts">
 import { useEventStore } from '../stores/EventStore'
-export default {
+import { defineComponent, computed } from 'vue'
+import { EventItem } from '../types'
+
+export default defineComponent({
   props: ['id'],
   setup() {
     const eventStore = useEventStore()
+    const event = computed(() => {
+      return eventStore.event
+    })
     return {
-      eventStore
+      eventStore,
+      event
     }
   },
   created() {
@@ -15,13 +22,8 @@ export default {
         params: { error: error }
       })
     })
-  },
-  computed: {
-    event() {
-      return this.eventStore.event
-    }
   }
-}
+})
 </script>
 
 <template>
