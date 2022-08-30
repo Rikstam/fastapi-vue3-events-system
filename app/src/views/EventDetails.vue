@@ -1,8 +1,15 @@
 <script>
+import { useEventStore } from '../stores/EventStore'
 export default {
   props: ['id'],
+  setup() {
+    const eventStore = useEventStore()
+    return {
+      eventStore
+    }
+  },
   created() {
-    this.$store.dispatch('fetchEvent', Number(this.id)).catch(error => {
+    this.eventStore.fetchEvent(Number(this.id)).catch(error => {
       this.$router.push({
         name: 'ErrorDisplay',
         params: { error: error }
@@ -11,7 +18,7 @@ export default {
   },
   computed: {
     event() {
-      return this.$store.state.event
+      return this.eventStore.event
     }
   }
 }
