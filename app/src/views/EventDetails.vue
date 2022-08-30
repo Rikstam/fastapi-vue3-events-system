@@ -1,28 +1,23 @@
-<script lang="ts">
+<script setup lang="ts">
 import { useEventStore } from '../stores/EventStore'
-import { defineComponent, computed } from 'vue'
-import { EventItem } from '../types'
+import { computed, defineProps, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
-export default defineComponent({
-  props: ['id'],
-  setup() {
-    const eventStore = useEventStore()
-    const event = computed(() => {
-      return eventStore.event
-    })
-    return {
-      eventStore,
-      event
-    }
-  },
-  created() {
-    this.eventStore.fetchEvent(Number(this.id)).catch(error => {
-      this.$router.push({
+
+const props = defineProps<{id: string}>()
+const router = useRouter()
+const eventStore = useEventStore()
+const event = computed(() => {
+  return eventStore.event
+})
+   
+onMounted (() => {
+    eventStore.fetchEvent(Number(props.id)).catch(error => {
+      router.push({
         name: 'ErrorDisplay',
         params: { error: error }
       })
     })
-  }
 })
 </script>
 
