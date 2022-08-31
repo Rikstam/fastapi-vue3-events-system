@@ -1,26 +1,19 @@
-<script lang="ts">
+<script setup lang="ts">
 import EventCard from '../components/EventCard.vue'
 import { useEventStore } from '../stores/EventStore'
-import { defineComponent } from 'vue'
+import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
-export default defineComponent( {
-  components: {
-    EventCard
-  },
-  setup() {
-    const eventStore = useEventStore()
-    return {
-      eventStore
-    }
-  },
-  created() {
-    this.eventStore.fetchEvents().catch(error => {
-      this.$router.push({
-        name: 'ErrorDisplay',
-        params: { error: error }
-      })
+const eventStore = useEventStore()
+const router = useRouter()
+
+onMounted(()=> {
+  eventStore.fetchEvents().catch(error => {
+    router.push({
+      name: 'ErrorDisplay',
+      params: { error: error }
     })
-  },
+  })
 })
 </script>
 

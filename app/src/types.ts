@@ -1,5 +1,5 @@
 export interface EventItem {
-    id: number;
+    id?: number;
     category: string;
     title: string;
     description: string;

@@ -10,17 +10,12 @@
   </router-link>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from 'vue'
+<script setup lang="ts">
 import { EventItem } from '../types'
-export default defineComponent({
-  props: {
-    event: {
-      type: Object as PropType<EventItem>,
-      required: true
-    }
-  }
-})
+import { defineProps } from 'vue'
+
+const props = defineProps<{event: EventItem}>()
+
 </script>
 
 <style scoped>
