@@ -1,18 +1,5 @@
 import axios from 'axios'
-import { EventItem } from '../types.js'
-
-
-type GetEventsResponse = {
-  data: EventItem[]
-}
-
-type GetEventResponse = {
-  data: EventItem
-}
-
-type CreateEventResponse = {
-  data: EventItem
-}
+import { EventItem, GetEventResponse, GetEventsResponse, CreateEventResponse } from '../types.js'
 
 const apiClient = axios.create({
   baseURL: 'http://localhost:8002',
