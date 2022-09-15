@@ -7,8 +7,10 @@ export interface EventItem {
     date: string;
     time: string;
     organization: string;
+    catering: boolean;
+    music: boolean;
+    pets: number;
 }
-
 export interface UserItem {
     user: string;
 }
@@ -22,6 +24,10 @@ export type GetEventsResponse = {
     date: string;
     time: string;
     organization: string;
+    catering: boolean;
+    music: boolean;
+    pets: number;
+
 }[]
 
 export type GetEventResponse = {
@@ -33,6 +39,9 @@ export type GetEventResponse = {
     date: string;
     time: string;
     organization: string;
+    catering: boolean;
+    music: boolean;
+    pets: number;
 }
 
 export type CreateEventResponse = {
@@ -44,4 +53,7 @@ export type CreateEventResponse = {
     date: string;
     time: string;
     organization: string;
+    catering: boolean;
+    music: boolean;
+    pets: number;
 }

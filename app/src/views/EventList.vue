@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import EventCard from '../components/EventCard.vue'
 import { useEventStore } from '../stores/EventStore'
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
