@@ -7,6 +7,13 @@
     class="field"
 >
 <label :for="uuid">{{label}}</label>
+<p v-if="error"
+           class="errorMessage"
+           aria-live="assertive"
+           :id="`${uuid}-error`"
+           >
+            {{error}}
+        </p>
 </template>
 
 <script setup lang="ts">
@@ -15,9 +22,11 @@ import UniqueID from '../features/UniqueID';
 interface Props {
     label: string
     modelValue:  boolean
+    error?: string
 }
 const props = withDefaults(defineProps<Props>(), {
-    modelValue: false
+    modelValue: false,
+    error: ''
 })
 
 const uuid = UniqueID().getID().toString()

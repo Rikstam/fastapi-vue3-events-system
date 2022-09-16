@@ -36,7 +36,7 @@ const routes = [
   },
   {
     path: '/login',
-    name: 'EventList',
+    name: 'Login',
     component: LoginForm
   },
 ]

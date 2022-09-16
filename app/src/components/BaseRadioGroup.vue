@@ -10,6 +10,7 @@
         :name="name"
         :modelValue="modelValue"
         @update:modelValue="$emit('update:modelValue', $event)"
+        :error="error"
     />
 </component>
 </template>
@@ -24,9 +25,11 @@ interface Props {
     name: string,
     modelValue: string | number,
     vertical: boolean
+    error?: string
 }
 const props = withDefaults(defineProps<Props>(),{
-    vertical: false
+    vertical: false,
+    error: ''
 })
 </script>
 

@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { reactive } from 'vue'
 import { useEventStore } from '../stores/EventStore'
 import { useUserStore } from '../stores/UserStore'
-import { EventItem } from '../types'
 import { useRouter } from 'vue-router'
 import BaseInput from '../components/BaseInput.vue'
 import BaseSelect from '../components/BaseSelect.vue'
 import BaseCheckbox from '../components/BaseCheckbox.vue'
 import BaseRadioGroup from '../components/BaseRadioGroup.vue'
+import { useField, useForm } from 'vee-validate'
 
 const router = useRouter()
 const categories = [
@@ -24,25 +23,79 @@ const petOptions = [
   {label: 'Yes', value: 1},
   {label: 'No', value: 0}
 ]
+const required = (value: string | number) => {
+      const requiredMessage = 'This field is required'
+      if (value === undefined || value === null) return requiredMessage
+      if (!String(value).length) return requiredMessage
+      return true
+    }
+const minLength = (number: number, value: string | number) => {
+  if (String(value).length < number) return 'Please type at least ' + number + ' characters'
+  return true
+}
 
-const event = reactive<EventItem>({
-  category: '',
-  title: '',
-  description: '',
-  location: '',
-  date: '',
-  time: '',
-  organization: '',
-  catering: false,
-  music: false,
-  pets: 0
+const anything = () => {
+  return true
+}
+
+const validationSchema = {
+  category: required,
+  title: (value: string) => {
+    const req = required(value)
+    if (req !== true) return req
+    
+    const min = minLength(3, value)
+    if (min !== true ) return min
+
+    return true
+  },
+  description: required,
+  location: required,
+  date: required,
+  time: required,
+  organization: required,
+  catering: anything,
+  music: anything,
+  pets: anything
+}
+
+const { handleSubmit } = useForm({
+  validationSchema
 })
+
+const submit = handleSubmit((values) => {
+
+})
+
+const { value: category, errorMessage: categoryError } = useField<string>('category')
+const { value: title, errorMessage: titleError } = useField<string>('title')
+const { value: description, errorMessage: descriptionError } = useField<string>('description')
+const { value: location, errorMessage: locationError} = useField<string>('location')
+const { value: date, errorMessage: dateError } = useField<string>('date')
+const { value: time, errorMessage: timeError } = useField<string>('time')
+const { value: organization, errorMessage: organizationError } = useField<string>('organization')
+const { value: pets, errorMessage: petsError } = useField<number>('pets', undefined, { initialValue: 1 })
+const { value: catering, errorMessage: cateringError } = useField<boolean>('catering', undefined, { initialValue: false })
+const { value: music, errorMessage: musicError } = useField<boolean>('music', undefined, { initialValue: false })
 
 const userStore = useUserStore()
 const eventStore = useEventStore()
 
 const onSubmit = () => {
-eventStore.createEvent(event)
+eventStore.createEvent(
+  {
+    category: category.value,
+    title: title.value,
+    description: description.value,
+    location: location.value,
+    date: date.value,
+    time: time.value,
+    organization: organization.value,
+    pets: pets.value,
+    catering: catering.value,
+    music: music.value
+  }
+)
   .then(() => {
     router.push({
       name: 'EventList',
@@ -61,21 +114,24 @@ eventStore.createEvent(event)
   <h1>Create an event</h1>
 
   <div class="form-container">
-    <form @submit.prevent="onSubmit">
+    <form @submit.prevent="submit">
       <BaseSelect  
-        v-model="event.category"
+        v-model="category"
         :options="categories"
+        :error="categoryError"
         label="Select a category:"
         />
       <fieldset>
           <legend>Name & describe your event</legend>
           <BaseInput
-        v-model="event.title"
-        label="Title"
-        type="text"
+            v-model="title"
+            :error="titleError"
+            label="Title"
+            type="text"
       />
         <BaseInput
-          v-model="event.description"
+          v-model="description"
+          :error="descriptionError"
           label="Description"
           type="text"
         />
@@ -85,7 +141,8 @@ eventStore.createEvent(event)
       <fieldset>
         <legend>Where is your event?</legend>
         <BaseInput 
-        v-model="event.location"
+        v-model="location"
+        :error="locationError"
         label="Location"
         type="text"
       />
@@ -95,7 +152,8 @@ eventStore.createEvent(event)
       <legend>Pets</legend>
       <p>Are pets allowed?</p>
         <BaseRadioGroup 
-          v-model="event.pets"
+          v-model="pets"
+          :error="petsError"
           name="pets"
           :options="petOptions"
           vertical/>
@@ -104,19 +162,29 @@ eventStore.createEvent(event)
       <legend>Extras</legend>
       <div>
         <BaseCheckbox
-          v-model="event.catering"
+          v-model="catering"
+          :error="cateringError"
           label="Catering"/>
       </div>
       <div>
         <BaseCheckbox
-          v-model="event.music"
+          v-model="music"
+          :error="musicError"
           label="Live music"/>
       </div>
     </fieldset>
     <fieldset>
       <legend>When is your event?</legend>
-      <BaseInput v-model="event.date" type="date" label="Date"/>
-      <BaseInput v-model="event.time" type="time" label="Time"/>
+      <BaseInput
+        v-model="date"
+        type="date"
+        label="Date"
+        :error="dateError"/>
+      <BaseInput
+        v-model="time"
+        type="time"
+        label="Time"
+        :error="timeError"/>
     </fieldset>
     <button type="submit">Submit</button>
     </form>

@@ -24,11 +24,12 @@
   import UniqueID from '../features/UniqueID'
   interface Props {
     label: string
-    modelValue:  string | number
+    modelValue?:  string | number
     error?: string
   }
   const props = withDefaults(defineProps<Props>(),{
-    error: ''
+    error: '',
+    value: ''
   })
   const uuid = UniqueID().getID().toString()
 </script>
