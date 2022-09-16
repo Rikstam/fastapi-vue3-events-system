@@ -9,6 +9,7 @@ uvicorn = "*"
 tortoise-orm = "*"
 asyncpg = "*"
 aerich = "*"
+passlib = {extras = ["bcrypt"], version = "*"}
 
 [dev-packages]
 pytest = "*"

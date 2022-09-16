@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api import ping, events
+from app.api.users import users
 from app.db import init_db
 
 log = logging.getLogger("uvicorn")
@@ -13,6 +14,7 @@ def create_application() -> FastAPI:
     application = FastAPI()
     application.include_router(ping.router)
     application.include_router(events.router, prefix="/events", tags=["events"])
+    application.include_router(users.router, prefix="/users", tags=["users"])
 
     origins = [
         "http://localhost",

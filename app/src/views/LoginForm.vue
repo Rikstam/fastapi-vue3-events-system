@@ -24,16 +24,12 @@
   </template>
   
 <script setup lang="ts">
-import { useField } from 'vee-validate'
+import { useField, useForm } from 'vee-validate'
 import BaseInput from '../components/BaseInput.vue'
 import BaseButton from '../components/BaseButton.vue'
 
-
-const onSubmit = () => {
-  alert("submitted!")
-}
-
-const {value: email, errorMessage: emailError} = useField<string>('email', function(value) {
+const validations = {
+  email: (value: string) => {
     if (!value) return 'This field is required'
 
     const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -42,12 +38,26 @@ const {value: email, errorMessage: emailError} = useField<string>('email', funct
     }
   
     return true
-  })
+  },
+  password: (value: string) => {
+    const requiredMessage = 'Password is required'
+    if (value === undefined ||  value === null) return requiredMessage
+    if(!String(value).length) return requiredMessage
+    return true
+  }
+}
 
-const {value: password, errorMessage: passwordError} = useField<string>('password', function(value){
-  if (!value) return 'This field is required'
-  return true
+const onSubmit = () => {
+  alert("submitted!")
+}
+
+useForm({
+  validationSchema: validations
 })
+
+const {value: email, errorMessage: emailError} = useField<string>('email')
+
+const {value: password, errorMessage: passwordError} = useField<string>('password')
 
 </script>
   

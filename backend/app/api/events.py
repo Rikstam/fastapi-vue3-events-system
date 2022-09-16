@@ -11,7 +11,7 @@ from app.models.tortoise import EventSchema
 router = APIRouter()
 
 @router.post("/", response_model=EventResponseSchema, status_code=201)
-async def create_summary(payload: EventPayloadSchema) -> EventResponseSchema:
+async def create_event(payload: EventPayloadSchema) -> EventResponseSchema:
     event_id = await crud.post(payload)
 
     response_object = {
