@@ -3,6 +3,8 @@ import { useEventStore } from '../stores/EventStore'
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
+import EventCard from '../components/EventCard.vue';
+
 const eventStore = useEventStore()
 const router = useRouter()
 

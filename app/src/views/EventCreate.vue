@@ -67,51 +67,70 @@ eventStore.createEvent(event)
         :options="categories"
         label="Select a category:"
         />
-      <h3>Name & describe your event</h3>
-      <BaseInput
+      <fieldset>
+          <legend>Name & describe your event</legend>
+          <BaseInput
         v-model="event.title"
         label="Title"
         type="text"
       />
-      <BaseInput
-        v-model="event.description"
-        label="Description"
-        type="text"
-
-      />
-
-      <h3>Where is your event?</h3>
-      <BaseInput 
+        <BaseInput
+          v-model="event.description"
+          label="Description"
+          type="text"
+        />
+      </fieldset>
+     
+      
+      <fieldset>
+        <legend>Where is your event?</legend>
+        <BaseInput 
         v-model="event.location"
         label="Location"
         type="text"
       />
-      <h3>Are pets allowed?</h3>
-      <div>
+      </fieldset>
+     
+     <fieldset>
+      <legend>Pets</legend>
+      <p>Are pets allowed?</p>
         <BaseRadioGroup 
           v-model="event.pets"
           name="pets"
           :options="petOptions"
           vertical/>
-      </div>
-      <h3>Extras</h3>
+     </fieldset>
+     <fieldset>
+      <legend>Extras</legend>
       <div>
         <BaseCheckbox
           v-model="event.catering"
           label="Catering"/>
       </div>
-
       <div>
         <BaseCheckbox
           v-model="event.music"
           label="Live music"/>
       </div>
-
-      <h3>When is your event?</h3>
+    </fieldset>
+    <fieldset>
+      <legend>When is your event?</legend>
       <BaseInput v-model="event.date" type="date" label="Date"/>
       <BaseInput v-model="event.time" type="time" label="Time"/>
-
-      <button type="submit">Submit</button>
+    </fieldset>
+    <button type="submit">Submit</button>
     </form>
   </div>
 </template>
+<style>
+  fieldset {
+    border: 0px;
+    margin: 0px;
+    padding: 0px;
+  }
+  legend {
+    font-size: 28px;
+    font-weight: 700;
+    margin-top: 20px;
+  }
+</style>
