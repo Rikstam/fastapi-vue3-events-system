@@ -7,6 +7,7 @@ import BaseSelect from '../components/BaseSelect.vue'
 import BaseCheckbox from '../components/BaseCheckbox.vue'
 import BaseRadioGroup from '../components/BaseRadioGroup.vue'
 import { useField, useForm } from 'vee-validate'
+import { object, string, number, boolean } from 'yup'
 
 const router = useRouter()
 const categories = [
@@ -38,26 +39,18 @@ const anything = () => {
   return true
 }
 
-const validationSchema = {
-  category: required,
-  title: (value: string) => {
-    const req = required(value)
-    if (req !== true) return req
-    
-    const min = minLength(3, value)
-    if (min !== true ) return min
-
-    return true
-  },
-  description: required,
-  location: required,
-  date: required,
-  time: required,
-  organization: required,
-  catering: anything,
-  music: anything,
-  pets: anything
-}
+const validationSchema = object({
+  category: string().required(),
+  title: string().required('A title is required!'),
+  description: string().required(),
+  location: string().required(),
+  organization: string().required(),
+  pets: number().required(),
+  catering: boolean().required(),
+  music: boolean().required(),
+  date: string().required(),
+  time: string().required(),
+})
 
 const { handleSubmit, errors } = useForm({
   validationSchema,
@@ -117,8 +110,6 @@ const { value: music } = useField<boolean>('music')
 const userStore = useUserStore()
 const eventStore = useEventStore()
 
-const onSubmit = () => {
-}
 </script>
 
 <template>

@@ -1,17 +1,17 @@
 <template>
-    <form @submit.prevent="onSubmit">
+    <form @submit.prevent="submit">
       <BaseInput
         label="Email"
         type="email"
         v-model="email"
-        :error="emailError"
+        :error="errors.email"
       />
   
       <BaseInput
         label="Password"
         type="password"
         v-model="password"
-        :error="passwordError"
+        :error="errors.password"
       />
   
       <BaseButton
@@ -27,37 +27,22 @@
 import { useField, useForm } from 'vee-validate'
 import BaseInput from '../components/BaseInput.vue'
 import BaseButton from '../components/BaseButton.vue'
+import {object, string} from 'yup'
 
-const validations = {
-  email: (value: string) => {
-    if (!value) return 'This field is required'
-
-    const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    if (!regex.test(String(value).toLowerCase())) {
-      return 'Please enter a valid email address'
-    }
-  
-    return true
-  },
-  password: (value: string) => {
-    const requiredMessage = 'Password is required'
-    if (value === undefined ||  value === null) return requiredMessage
-    if(!String(value).length) return requiredMessage
-    return true
-  }
-}
-
-const onSubmit = () => {
-  alert("submitted!")
-}
-
-useForm({
-  validationSchema: validations
+const validationSchema = object({
+  email: string().email().required(),
+  password: string().email().required(),
+})
+const {handleSubmit, errors} = useForm({
+ validationSchema
 })
 
-const {value: email, errorMessage: emailError} = useField<string>('email')
-
-const {value: password, errorMessage: passwordError} = useField<string>('password')
+const submit = handleSubmit((values)=> {
+  console.log(values)
+  alert("submitted!")
+})
+const {value: email} = useField<string>('email')
+const {value: password} = useField<string>('password')
 
 </script>
   
