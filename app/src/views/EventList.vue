@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useEventStore } from '../stores/EventStore'
-import { onMounted } from 'vue'
+import { onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
 
 import EventCard from '../components/EventCard.vue';
@@ -8,8 +8,9 @@ import EventCard from '../components/EventCard.vue';
 const eventStore = useEventStore()
 const router = useRouter()
 
-onMounted(()=> {
-  eventStore.fetchEvents().catch(error => {
+onBeforeMount(()=> {
+  eventStore.fetchEvents()
+  .catch(error => {
     router.push({
       name: 'ErrorDisplay',
       params: { error: error }

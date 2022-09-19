@@ -59,30 +59,24 @@ const validationSchema = {
   pets: anything
 }
 
-const { handleSubmit } = useForm({
-  validationSchema
+const { handleSubmit, errors } = useForm({
+  validationSchema,
+  initialValues: {
+    category: '',
+    title: '',
+    description: '',
+    location: '',
+    organization: '',
+    pets: 1,
+    catering: false,
+    music: false,
+    date: '',
+    time: ''
+  }
 })
 
 const submit = handleSubmit((values) => {
-
-})
-
-const { value: category, errorMessage: categoryError } = useField<string>('category')
-const { value: title, errorMessage: titleError } = useField<string>('title')
-const { value: description, errorMessage: descriptionError } = useField<string>('description')
-const { value: location, errorMessage: locationError} = useField<string>('location')
-const { value: date, errorMessage: dateError } = useField<string>('date')
-const { value: time, errorMessage: timeError } = useField<string>('time')
-const { value: organization, errorMessage: organizationError } = useField<string>('organization')
-const { value: pets, errorMessage: petsError } = useField<number>('pets', undefined, { initialValue: 1 })
-const { value: catering, errorMessage: cateringError } = useField<boolean>('catering', undefined, { initialValue: false })
-const { value: music, errorMessage: musicError } = useField<boolean>('music', undefined, { initialValue: false })
-
-const userStore = useUserStore()
-const eventStore = useEventStore()
-
-const onSubmit = () => {
-eventStore.createEvent(
+  eventStore.createEvent(
   {
     category: category.value,
     title: title.value,
@@ -107,6 +101,23 @@ eventStore.createEvent(
       params: { error: error }
     })
   })
+})
+
+const { value: category } = useField<string>('category')
+const { value: title } = useField<string>('title')
+const { value: description } = useField<string>('description')
+const { value: location} = useField<string>('location')
+const { value: date } = useField<string>('date')
+const { value: time } = useField<string>('time')
+const { value: organization } = useField<string>('organization')
+const { value: pets } = useField<number>('pets')
+const { value: catering } = useField<boolean>('catering')
+const { value: music } = useField<boolean>('music')
+
+const userStore = useUserStore()
+const eventStore = useEventStore()
+
+const onSubmit = () => {
 }
 </script>
 
@@ -118,20 +129,20 @@ eventStore.createEvent(
       <BaseSelect  
         v-model="category"
         :options="categories"
-        :error="categoryError"
+        :error="errors.category"
         label="Select a category:"
         />
       <fieldset>
           <legend>Name & describe your event</legend>
           <BaseInput
             v-model="title"
-            :error="titleError"
+            :error="errors.title"
             label="Title"
             type="text"
       />
         <BaseInput
           v-model="description"
-          :error="descriptionError"
+          :error="errors.description"
           label="Description"
           type="text"
         />
@@ -142,8 +153,18 @@ eventStore.createEvent(
         <legend>Where is your event?</legend>
         <BaseInput 
         v-model="location"
-        :error="locationError"
+        :error="errors.location"
         label="Location"
+        type="text"
+      />
+      </fieldset>
+
+      <fieldset>
+        <legend>Organization</legend>
+        <BaseInput 
+        v-model="organization"
+        :error="errors.organization"
+        label="Organization"
         type="text"
       />
       </fieldset>
@@ -153,7 +174,7 @@ eventStore.createEvent(
       <p>Are pets allowed?</p>
         <BaseRadioGroup 
           v-model="pets"
-          :error="petsError"
+          :error="errors.pets"
           name="pets"
           :options="petOptions"
           vertical/>
@@ -163,13 +184,13 @@ eventStore.createEvent(
       <div>
         <BaseCheckbox
           v-model="catering"
-          :error="cateringError"
+          :error="errors.catering"
           label="Catering"/>
       </div>
       <div>
         <BaseCheckbox
           v-model="music"
-          :error="musicError"
+          :error="errors.music"
           label="Live music"/>
       </div>
     </fieldset>
@@ -179,12 +200,12 @@ eventStore.createEvent(
         v-model="date"
         type="date"
         label="Date"
-        :error="dateError"/>
+        :error="errors.date"/>
       <BaseInput
         v-model="time"
         type="time"
         label="Time"
-        :error="timeError"/>
+        :error="errors.time"/>
     </fieldset>
     <button type="submit">Submit</button>
     </form>
