@@ -1,26 +1,12 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link :to="{ name: 'EventList' }">Events</router-link> |
-      <router-link :to="{ name: 'About' }">About</router-link>
-      |
-      <router-link :to="{ name: 'EventCreate' }">Create Event</router-link>
-      <p>Logged in as USER: {{userStore.firstName}}</p>
-    </div>
+    <AppNav />
     <router-view />
   </div>
 </template>
 
-<script>
-import { useUserStore } from './stores/UserStore';
-export default {
-  setup () {
-    const userStore = useUserStore()
-    return {
-      userStore
-    }
-  }
-}
+<script setup lang="ts">
+import AppNav from './components/AppNav.vue';
 </script>
 
 <style>
