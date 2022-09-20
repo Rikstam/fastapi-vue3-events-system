@@ -12,3 +12,4 @@ mock_user = {
 def test_user_register(test_app_with_db):
     response = test_app_with_db.post("/users", data=json.dumps(mock_user))
     assert response.status_code == 201
+

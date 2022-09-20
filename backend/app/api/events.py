@@ -34,7 +34,7 @@ async def read_event(id: int = Path(..., gt=0)) -> EventSchema:
     return event
 
 @router.delete("/{id}/", response_model=EventResponseSchema)
-async def delete_summary(id: int) -> EventResponseSchema:
+async def delete_event(id: int) -> EventResponseSchema:
     event = await crud.get(id)
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
