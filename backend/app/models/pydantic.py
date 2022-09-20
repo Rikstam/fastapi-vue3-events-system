@@ -18,9 +18,6 @@ class EventUpdatePayloadSchema(EventPayloadSchema):
 
 class TokenData(BaseModel):
     username: str | None = None
-class Token(BaseModel):
-    access_token: str
-    token_type: str
 
 class UserPayLoadSchema(BaseModel):
     username: str
@@ -35,3 +32,8 @@ class UserResponseSchema(BaseModel):
     email: str
     first_name: str
     last_name: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+    userInfo: UserResponseSchema
