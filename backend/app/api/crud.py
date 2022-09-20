@@ -1,3 +1,4 @@
+from unicodedata import category
 from app.models.pydantic import EventPayloadSchema
 from app.models.tortoise import Event
 from typing import Union, List
@@ -9,7 +10,9 @@ async def post(payload: EventPayloadSchema) -> int:
        location=payload.location,
        date=payload.date,
        time=payload.time,
-       organization=payload.organization
+       organization=payload.organization,
+       category= payload.category,
+       user_id=payload.user_id
     )
     await event.save()
     return event.id
@@ -35,7 +38,8 @@ async def put(id: int, payload: EventPayloadSchema) -> Union[dict, None]:
         location=payload.location,
         date=payload.date,
         time=payload.time,
-        organization=payload.organization
+        organization=payload.organization,
+        category=payload.category
     )
     if event:
         updated_event = await Event.filter(id=id).first().values()

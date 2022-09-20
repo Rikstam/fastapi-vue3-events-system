@@ -21,12 +21,14 @@ async def create_event(payload: EventPayloadSchema) -> EventResponseSchema:
         "location": payload.location,
         "date": payload.date,
         "time": payload.time,
-        "organization": payload.organization
+        "organization": payload.organization,
+        "category": payload.category,
+        "user_id": payload.user_id
     }
     return response_object
 
-@router.get("/{id}/", response_model=EventSchema)
-async def read_event(id: int = Path(..., gt=0)) -> EventSchema:
+@router.get("/{id}/", response_model=EventResponseSchema)
+async def read_event(id: int = Path(..., gt=0)) -> EventResponseSchema:
     event = await crud.get(id)
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
@@ -43,8 +45,8 @@ async def delete_event(id: int) -> EventResponseSchema:
 
     return event
 
-@router.get("/", response_model=List[EventSchema])
-async def read_all_events() -> List[EventSchema]:
+@router.get("/", response_model=List[EventResponseSchema])
+async def read_all_events() -> List[EventResponseSchema]:
     return await crud.get_all()
 
 @router.put("/{id}/", response_model=EventSchema)

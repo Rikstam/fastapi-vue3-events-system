@@ -32,4 +32,5 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return encoded_jwt
 
 def decode_token(token: str):
-    return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    decoded = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    return decoded

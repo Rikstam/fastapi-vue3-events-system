@@ -9,7 +9,8 @@ class Event(models.Model):
     date = fields.DateField()
     time = fields.TimeField()
     organization = fields.CharField(max_length=255)
-   # category = fields.CharField(max_length=255)
+    user = fields.ForeignKeyField('models.User', related_name='events')
+    category = fields.CharField(max_length=255)
 
     def __str__(self):
         return self.title

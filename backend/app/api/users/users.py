@@ -4,15 +4,16 @@ from datetime import timedelta
 from jose import JWTError
 from fastapi import APIRouter,Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
-from typing import Union
+from typing import Union, List
 
 from app.models.pydantic import( 
     UserPayLoadSchema,
     UserResponseSchema,
     Token,
     TokenData,
+    EventResponseSchema
 )
-from app.models.tortoise import User
+from app.models.tortoise import User, Event
 from app.api.users import auth
 router = APIRouter()
 
@@ -49,7 +50,8 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         if username is None:
             raise credentials_exception
         token_data = TokenData(username=username)
-    except JWTError:
+    except JWTError as e:
+        print(e)
         raise credentials_exception
     user = await get_user(username=token_data.username)
     if user is None:
@@ -95,19 +97,24 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     access_token = auth.create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        }
 
-@router.get("/users/me/", response_model=UserResponseSchema)
+@router.get("/me", response_model=UserResponseSchema)
 async def read_users_me(current_user: UserResponseSchema = Depends(get_current_active_user)):
     return current_user
 
-@router.get("/{uuid}", response_model=UserResponseSchema)
+@router.get("/me/events")
+async def read_own_items(current_user: User = Depends(get_current_active_user)):
+    user_events = await Event.filter(user_id=current_user.uuid)
+    return user_events
+
+@router.get("/{uuid}")
 async def get_user_by_uuid(uuid: str):
     user = await User.filter(uuid=uuid).first()
+    user_events = await Event.filter(user_id=user.uuid)
     if user:
-        return user
+        return [{"user": user, "events": user_events}]
     return None
-
-@router.get("/me/items/")
-async def read_own_items(current_user: User = Depends(get_current_active_user)):
-    return [{"item_id": "Foo", "owner": current_user.username}]
