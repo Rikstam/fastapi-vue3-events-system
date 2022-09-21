@@ -2,10 +2,22 @@ import { defineStore } from 'pinia'
 import { CreateUserPayload, LoginUserPayload, UserInfo } from '../types'
 import UserService from '../services/UserService'
 
+type token = string | null
+
+let token: token = null
+let userInfo: UserInfo | null = null
+
+const initialAuthState: { token: token, userInfo: UserInfo } | null = JSON.parse(localStorage.getItem('user'));
+
+if (initialAuthState !== null) {
+    token = initialAuthState.token
+    userInfo = initialAuthState.userInfo
+}
+
 export const useUserStore = defineStore('UserStore', {
     state: () => ({
-        user: null as UserInfo | null,
-        token: null as string | null
+        user: userInfo as UserInfo | null,
+        token: token as token
     }),
     getters: {
         firstName(): string {
@@ -31,7 +43,6 @@ export const useUserStore = defineStore('UserStore', {
         login(credentials: LoginUserPayload) {
             return UserService.loginUser(credentials)
                 .then((response) => {
-                    console.log(response.data)
                     const token = response.data.access_token
                     const userInfo = response.data.userInfo
                     this.user = userInfo

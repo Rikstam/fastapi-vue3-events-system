@@ -22,6 +22,7 @@
       Submit
       </BaseButton>
     </form>
+    <p v-if="loginError">{{ loginError}}</p>
     <router-link to="/sign-up">
       Don't have an account? Register.
     </router-link>
@@ -34,6 +35,7 @@ import BaseButton from '../components/BaseButton.vue'
 import {object, string} from 'yup'
 import { useUserStore } from '../stores/UserStore'
 import { useRouter } from 'vue-router'
+import { ref } from 'vue'
 
 const validationSchema = object({
   username: string().required(),
@@ -43,17 +45,23 @@ const {handleSubmit, errors} = useForm({
  validationSchema
 })
 
+const loginError = ref('')
+
 const router = useRouter()
 const userStore = useUserStore()
-const submit = handleSubmit((values)=> {
+const submit = handleSubmit((values) => {
   userStore.login({
     username: username.value,
     password: password.value
-  }
-  ).then(() => {
+  })
+  .then(() => {
     router.push({
       name: 'Dashboard',
     })
+  })
+  .catch((error) => {
+    console.log(error.response)
+    loginError.value = error.response.data.detail
   })
 })
 const {value: username, handleChange} = useField<string>('username')

@@ -53,6 +53,7 @@ import BaseButton from '../components/BaseButton.vue'
 import {object, string} from 'yup'
 import { useUserStore } from '../stores/UserStore'
 import { useRouter } from 'vue-router'
+import { ref } from 'vue'
 
 const validationSchema = object({
   email: string().email().required(),
@@ -71,6 +72,8 @@ const handleChange = ((event: Event) => {
     setFieldValue('email', (event.target as HTMLInputElement).value)
 })
 
+const registrationError = ref('')
+
 const submit = handleSubmit((values)=> {
   userStore.registerUser(
   {
@@ -86,11 +89,9 @@ const submit = handleSubmit((values)=> {
       name: 'Login',
     })
   })
-  .catch(error => {
-    router.push({
-      name: 'ErrorDisplay',
-      params: { error: error }
-    })
+  .catch((error) => {
+    console.log(error.response)
+    registrationError.value = error.response.data.detail
   })
 })
 const {value: first_name} = useField<string>('first_name')
