@@ -5,6 +5,8 @@ import EventCreate from './views/EventCreate.vue'
 import ErrorDisplay from './views/ErrorDisplay.vue'
 import About from './views/About.vue'
 import LoginForm from './views/LoginForm.vue'
+import RegistrationForm from './views/RegistrationForm.vue'
+import Dashboard from './views/Dashboard.vue'
 
 const routes = [
   {
@@ -38,6 +40,16 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: LoginForm
+  },
+  {
+    path: '/sign-up',
+    name: 'Signup',
+    component: RegistrationForm
+  },
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: Dashboard
   },
 ]
 

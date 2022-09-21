@@ -1,10 +1,10 @@
 <template>
     <form @submit.prevent="submit">
       <BaseInput
-        label="Email"
-        type="email"
-        :error="errors.email"
-        :modelValue="email"
+        label="Username"
+        type="text"
+        :error="errors.username"
+        :modelValue="username"
         @change="handleChange"
       />
   
@@ -33,7 +33,7 @@ import { useUserStore } from '../stores/UserStore'
 import { useRouter } from 'vue-router'
 
 const validationSchema = object({
-  email: string().email().required(),
+  username: string().required(),
   password: string().required(),
 })
 const {handleSubmit, errors} = useForm({
@@ -41,14 +41,19 @@ const {handleSubmit, errors} = useForm({
 })
 
 const router = useRouter()
-
+const userStore = useUserStore()
 const submit = handleSubmit((values)=> {
-  console.log(values)
-  router.push({
-      name: 'EventList',
+  userStore.login({
+    username: username.value,
+    password: password.value
+  }
+  ).then(() => {
+    router.push({
+      name: 'Dashboard',
     })
+  })
 })
-const {value: email, handleChange} = useField<string>('email')
+const {value: username, handleChange} = useField<string>('username')
 const {value: password} = useField<string>('password')
 
 </script>
