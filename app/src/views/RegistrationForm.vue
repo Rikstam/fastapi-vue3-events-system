@@ -41,6 +41,9 @@
       Submit
       </BaseButton>
     </form>
+    <router-link to="/login">
+     Already registered? Login.
+    </router-link>
   </template>
   
 <script setup lang="ts">

@@ -41,6 +41,12 @@ export const useUserStore = defineStore('UserStore', {
                 .catch(error => {
                     throw error
                 })
+        },
+        logout() {
+            this.user = null
+            this.token = null
+            localStorage.removeItem('user')
+            location.reload()
         }
     }
 })

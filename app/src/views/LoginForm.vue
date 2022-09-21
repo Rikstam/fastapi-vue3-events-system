@@ -22,6 +22,9 @@
       Submit
       </BaseButton>
     </form>
+    <router-link to="/sign-up">
+      Don't have an account? Register.
+    </router-link>
   </template>
   
 <script setup lang="ts">

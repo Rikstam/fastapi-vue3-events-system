@@ -23,7 +23,10 @@ const routes = [
   {
     path: '/event/create',
     name: 'EventCreate',
-    component: EventCreate
+    component: EventCreate,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: '/about',
@@ -49,13 +52,29 @@ const routes = [
   {
     path: '/dashboard',
     name: 'Dashboard',
-    component: Dashboard
+    component: Dashboard,
+    meta: {
+      requiresAuth: true
+    }
   },
 ]
 
 const router = createRouter({
   history: createWebHashHistory(),
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  const loggedIn = localStorage.getItem('user')
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    if (!loggedIn) {
+      next('/')
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
 })
 
 export default router
