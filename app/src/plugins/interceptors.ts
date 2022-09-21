@@ -23,6 +23,10 @@ const onResponse = (response: AxiosResponse): AxiosResponse => {
 
 const onResponseError = (error: AxiosError): Promise<AxiosError> => {
     console.error(`[response error] [${JSON.stringify(error)}]`);
+    if (error?.response?.status === 401) {
+        const userStore = useUserStore()
+        userStore.logout()
+    }
     return Promise.reject(error);
 }
 

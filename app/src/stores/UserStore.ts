@@ -7,11 +7,17 @@ type token = string | null
 let token: token = null
 let userInfo: UserInfo | null = null
 
-const initialAuthState: { token: token, userInfo: UserInfo } | null = JSON.parse(localStorage.getItem('user'));
 
-if (initialAuthState !== null) {
-    token = initialAuthState.token
-    userInfo = initialAuthState.userInfo
+try {
+    const initialAuthState: { token: token, userInfo: UserInfo } | null = JSON.parse(localStorage.getItem('user'));
+
+    if (initialAuthState !== null) {
+        token = initialAuthState.token
+        userInfo = initialAuthState.userInfo
+    }
+} catch (error) {
+    console.log("malformed token data, removing")
+    localStorage.removeItem('user')
 }
 
 export const useUserStore = defineStore('UserStore', {
